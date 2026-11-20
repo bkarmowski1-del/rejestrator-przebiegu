@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<meta name="description" content="Prywatny rejestrator przebiegu samochodów">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Rejestrator przebiegu</title>
+<style>
+:root{--bg:#f3f5f9;--panel:#fff;--panel2:#eef1f6;--text:#172033;--muted:#697386;--line:#dfe4ec;--accent:#2864e8;--accent2:#e8efff;--good:#12805c;--danger:#d83b4b;--shadow:0 8px 28px #1720330c}
+[data-theme=dark]{--bg:#101522;--panel:#192233;--panel2:#222e42;--text:#edf2fb;--muted:#a6b1c4;--line:#303d52;--accent:#83aaff;--accent2:#263b60;--good:#59d5a6;--danger:#ff7885;--shadow:0 8px 28px #0003}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;transition:background .2s,color .2s}
+button,input,select{font:inherit}button{cursor:pointer}
+.app{max-width:760px;margin:auto;min-height:100dvh;padding:env(safe-area-inset-top) 16px calc(90px + env(safe-area-inset-bottom))}
+header{display:flex;align-items:center;justify-content:space-between;padding:20px 2px 16px}
+.brand{display:flex;align-items:center;gap:11px}.logo{width:42px;height:42px;border-radius:14px;background:var(--accent);color:white;display:grid;place-items:center;font-size:22px}
+h1{font-size:19px;margin:0;letter-spacing:-.4px} .sub{font-size:12px;color:var(--muted)}
+.iconbtn{border:1px solid var(--line);background:var(--panel);color:var(--text);width:42px;height:42px;border-radius:13px;font-size:18px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:var(--panel2);padding:5px;border-radius:16px;margin-bottom:18px}
+.tab{border:0;background:transparent;color:var(--muted);padding:10px 4px;border-radius:12px;font-size:12px;font-weight:650}
+.tab.active{background:var(--panel);color:var(--accent);box-shadow:var(--shadow)}
+.tab span{display:block;font-size:18px;margin-bottom:2px}
+h2{font-size:20px;margin:4px 0 3px;letter-spacing:-.5px}.hint{color:var(--muted);font-size:13px;margin:0 0 16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:19px;padding:16px;margin:12px 0;box-shadow:var(--shadow)}
+.hero{background:linear-gradient(130deg,#245bd5,#5288f2);color:white;border:0;padding:20px}
+.hero .muted{color:#dce7ff}.big{font-size:34px;font-weight:800;letter-spacing:-1.2px;margin:5px 0}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px}.muted{color:var(--muted)}.small{font-size:12px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--panel2);border-radius:15px;padding:13px}.stat strong{font-size:21px;display:block}.stat span{font-size:12px;color:var(--muted)}
+.btn{border:0;border-radius:13px;padding:12px 15px;background:var(--accent);color:white;font-weight:700}.btn.secondary{background:var(--accent2);color:var(--accent)}.btn.ghost{background:var(--panel2);color:var(--text)}.btn.danger{background:#ffe9ec;color:#bd2537}.btn.full{width:100%}
+.field{margin:12px 0}.field label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin:0 0 6px}
+input,select{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:12px;padding:12px;outline:none}input:focus,select:focus{border-color:var(--accent)}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.actions .btn{flex:1}
+.item{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}.item:last-child{border-bottom:0}
+.itemicon{width:40px;height:40px;border-radius:13px;background:var(--panel2);display:grid;place-items:center;font-size:19px;flex-shrink:0}
+.itemmain{min-width:0;flex:1}.itemmain strong{display:block}.itemmain small{color:var(--muted)}
+.km{font-weight:800;white-space:nowrap}.mini{border:0;background:var(--panel2);color:var(--text);border-radius:9px;padding:7px 9px}
+.empty{text-align:center;padding:28px 12px;color:var(--muted)}.empty b{display:block;color:var(--text);margin-bottom:4px}
+.filters{display:grid;grid-template-columns:1fr 1fr;gap:9px}.filters .wide{grid-column:1/-1}
+.barwrap{height:10px;background:var(--panel2);border-radius:20px;overflow:hidden;margin-top:7px}.bar{height:100%;background:var(--accent);border-radius:20px}
+.bottomnote{text-align:center;color:var(--muted);font-size:11px;padding:20px 0}
+dialog{border:1px solid var(--line);border-radius:20px;background:var(--panel);color:var(--text);width:min(92vw,460px);padding:20px;box-shadow:0 20px 70px #0005}dialog::backdrop{background:#060b16a8}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:11px 16px;border-radius:12px;z-index:5;display:none;max-width:90%;text-align:center}
+nav.bottom{position:fixed;bottom:0;left:0;right:0;background:var(--panel);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom));display:flex;justify-content:center;gap:12px}
+nav.bottom button{max-width:728px;width:100%}
+@media(min-width:600px){.app{padding-left:24px;padding-right:24px}.tab{font-size:13px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="brand"><div class="logo">🚗</div><div><h1>Rejestrator przebiegu</h1><div class="sub">Twoje kilometry pod kontrolą</div></div></div><button class="iconbtn" id="themeBtn" aria-label="Zmień motyw">☾</button></header>
+<div class="tabs" role="tablist">
+<button class="tab active" data-tab="home"><span>⌂</span>Start</button>
+<button class="tab" data-tab="trips"><span>＋</span>Przejazdy</button>
+<button class="tab" data-tab="stats"><span>▥</span>Statystyki</button>
+<button class="tab" data-tab="manage"><span>⚙</span>Ustawienia</button>
+</div>
+<main id="view"></main>
+<div class="bottomnote">Dane są przechowywane na tym urządzeniu. Rób regularne kopie zapasowe.</div>
+</div>
+<nav class="bottom"><button class="btn" id="quickAdd">＋ Dodaj przejazd</button></nav>
+<div class="toast" id="toast"></div>
+<dialog id="tripDialog">
+<form id="tripForm">
+<div class="row"><h2 id="tripTitle">Nowy przejazd</h2><button type="button" class="iconbtn" id="closeDialog">×</button></div>
+<input type="hidden" id="tripId">
+<div class="field"><label for="tripDate">Data przejazdu</label><input id="tripDate" type="date" required></div>
+<div class="field"><label for="tripCar">Samochód</label><select id="tripCar" required></select></div>
+<div class="field"><label for="tripCategory">Kategoria</label><select id="tripCategory" required></select></div>
+<div class="grid2">
+<div class="field"><label for="startKm">Przebieg przed (km)</label><input id="startKm" type="number" min="0" step="1" required placeholder="np. 125000"></div>
+<div class="field"><label for="endKm">Przebieg po (km)</label><input id="endKm" type="number" min="0" step="1" required placeholder="np. 125047"></div>
+</div>
+<div class="field"><label for="tripNote">Notatka (opcjonalnie)</label><input id="tripNote" maxlength="120" placeholder="np. trasa do pracy"></div>
+<p class="muted small" id="tripCalc">Dystans: — km</p>
+<button class="btn full" type="submit">Zapisz przejazd</button>
+</form>
+</dialog>
+<dialog id="simpleDialog"><form id="simpleForm"><div class="row"><h2 id="simpleTitle">Dodaj</h2><button type="button" class="iconbtn" id="closeSimple">×</button></div><input id="simpleName" maxlength="50" required placeholder="Wpisz nazwę"><div class="field" id="extraField"><label for="simpleExtra">Dodatkowa informacja (opcjonalnie)</label><input id="simpleExtra" maxlength="50" placeholder="np. rejestracja"></div><div class="actions"><button type="button" class="btn ghost" id="cancelSimple">Anuluj</button><button class="btn" type="submit">Zapisz</button></div></form></dialog>
+<script src="app.js"></script>
+</body></html>
